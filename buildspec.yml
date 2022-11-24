@@ -23,7 +23,7 @@ phases:
       - cd ../..
       - cd /codebuild/output/
       - cd $CODEBUILD_SRC_DIR
-      - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6
+      - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 -Dsonar.sources=src/main/java/ -Dsonar.java.binaries=target/classes
 artifacts:
   files:
     - target/
