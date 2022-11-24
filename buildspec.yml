@@ -28,7 +28,7 @@ phases:
       - cd /codebuild/output/
       - cd $CODEBUILD_SRC_DIR
       - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json
-      - docker -t $REPOSITORY_URI:latest .
+      - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       - docker push 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
       - echo writing image definition file..
