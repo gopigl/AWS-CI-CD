@@ -18,6 +18,9 @@ phases:
       - source /etc/profile.d/sonar-scanner.sh
       - sonar-scanner -v
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 975136350146.dkr.ecr.ap-south-1.amazonaws.com
+      - REPOSITORY_URI=975136350146.dkr.ecr.ap-south-1.amazonaws.com/test
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
   post_build:
     commands:
       - echo SonarScanner started on `date`
@@ -25,12 +28,15 @@ phases:
       - cd /codebuild/output/
       - cd $CODEBUILD_SRC_DIR
       - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json
-      - docker build -t test .
-      - docker tag test:latest 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
+      - docker -t $REPOSITORY_URI:latest .
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       - docker push 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
+      - echo writing image definition file..
+      - printf '[{"name":"samplenode","imageUri":"%s"}]' $REPOSITORY_URI:$IMAGE_TAG > imagedefinitions.json
 artifacts:
   files:
     - target//MoonPageWebApp.war
     - scripts/*
+    - imagedefinitions.json
     #- appspec.yml
   discard-paths: yes
