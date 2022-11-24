@@ -1,0 +1,41 @@
+pipeline{
+    agent any
+    environment {
+        PATH = "$PATH:/opt/maven/bin"
+    }
+    stages{
+       stage('GetCode'){
+            steps{
+                git 'https://github.com/veerababu5/MOONPAGE-PROJECT.git'
+            }
+         }        
+       stage('Build'){
+            steps{
+                sh 'mvn clean package'
+            }
+         }
+        stage('SonarQube analysis') {
+//    def scannerHome = tool 'SonarScanner 4.0';
+        steps{
+        withSonarQubeEnv('sonarqube-8.9.8') { 
+        // If you have configured more than one global server connection, you can specify its name
+//      sh "${scannerHome}/bin/sonar-scanner"
+        sh "mvn sonar:sonar"
+             }
+         }
+     }
+       stage('Unit Test'){
+            steps{
+                dir('src'){
+                    sh """
+                    set +x
+                    source ~/nvm/nvm.sh
+                    set -e
+                    nvm use \$(cat .nvmrc)
+                    npm run test:unit report coverage
+                    """
+               }
+           }
+       }     
+    }
+}
