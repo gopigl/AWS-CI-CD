@@ -17,13 +17,17 @@ phases:
       - echo -e "#/bin/bash \n export PATH='$PATH:/opt/sonar-scanner/bin'" >> /etc/profile.d/sonar-scanner.sh
       - source /etc/profile.d/sonar-scanner.sh
       - sonar-scanner -v
+      - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 975136350146.dkr.ecr.ap-south-1.amazonaws.com
   post_build:
     commands:
       - echo SonarScanner started on `date`
       - cd ../..
       - cd /codebuild/output/
       - cd $CODEBUILD_SRC_DIR
-      - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json 
+      - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json
+      - docker build -t test .
+      - docker tag test:latest 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
+      - docker push 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
 artifacts:
   files:
     - target/
