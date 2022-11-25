@@ -13,8 +13,8 @@ phases:
       - wget https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.2.0.1873-linux.zip
       - unzip sonar-scanner-cli-4.2.0.1873-linux.zip
       - mv sonar-scanner-4.2.0.1873-linux /opt/sonar-scanner
-      - echo -e "sonar.host.url=http://13.127.249.89:9000/ \n  sonar.sourceEncoding=UTF-8 \n sonar.qualitygate.wait=true " >> /opt/sonar-scanner/conf/sonar-scanner.properties
-      - echo -e "#/bin/bash \n export PATH='$PATH:/opt/sonar-scanner/bin'" >> /etc/profile.d/sonar-scanner.sh
+      #- echo -e "sonar.host.url=http://13.127.249.89:9000/ \n  sonar.sourceEncoding=UTF-8 \n sonar.qualitygate.wait=true " >> /opt/sonar-scanner/conf/sonar-scanner.properties
+      #- echo -e "#/bin/bash \n export PATH='$PATH:/opt/sonar-scanner/bin'" >> /etc/profile.d/sonar-scanner.sh
       - source /etc/profile.d/sonar-scanner.sh
       - sonar-scanner -v
       - aws ecr get-login-password --region ap-south-1 | docker login --username AWS --password-stdin 975136350146.dkr.ecr.ap-south-1.amazonaws.com
@@ -27,7 +27,7 @@ phases:
       - cd ../..
       - cd /codebuild/output/
       - cd $CODEBUILD_SRC_DIR
-      - sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json
+      #- sonar-scanner -Dsonar.projectKey=test -Dsonar.sources=. -Dsonar.java.binaries=target/* -Dsonar.qualitygate.wait=false  -Dsonar.host.url=http://52.66.24.228:9000  -Dsonar.login=a1a7eaa159cb55e61e3e9eeeac6d07480e4f21f6 > sonar_scanreport.json
       - docker build -t $REPOSITORY_URI:latest .
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
       - docker push 975136350146.dkr.ecr.ap-south-1.amazonaws.com/test:latest
