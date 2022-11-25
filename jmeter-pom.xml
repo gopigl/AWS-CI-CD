@@ -41,7 +41,7 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <testFilesDirectory>/test/src/</testFilesDirectory>
+                    <testFilesDirectory>src/</testFilesDirectory>
                 </configuration>
             </plugin>
         </plugins>
